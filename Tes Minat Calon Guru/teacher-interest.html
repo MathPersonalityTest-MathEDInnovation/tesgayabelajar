@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tes Minat Calon Guru Matematika</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+.likert-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: nowrap;
+}
+
+.likert-option {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px 12px;
+  border-radius: 30px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.25s ease;
+  font-weight: 500;
+  color: #6d2323;
+}
+
+.likert-option:hover {
+  background: #f3d9be;
+  transform: translateY(-2px);
+}
+
+.likert-input {
+  display: none;
+}
+
+.likert-input:checked + .likert-option {
+  background: #a82828;
+  color: #fff;
+  border-color: #7c1f1f;
+  transform: translateY(-2px);
+}
+body {
+    font-family: 'Poppins', sans-serif; 
+    background: linear-gradient(135deg,#b84d4d,#e3b57e); 
+    margin:0; 
+    padding:40px 0; 
+    color:#333;
+}
+
+.container {
+    max-width:800px;
+    margin:0 auto;
+    background:#fffaf3;
+    padding:30px 40px;
+    border-radius:20px;
+    box-shadow:0 6px 16px rgba(0,0,0,0.15);
+}
+    
+h2 {
+    text-align:center;
+    color:#8c1f1f;
+    margin-bottom:10px;
+    font-weight:600;
+}
+    
+.intro {
+    text-align:center;
+    color:#fff;
+    background-color:#8c1f1f;
+    padding:10px 20px;
+    border-radius:10px;
+    margin-bottom:25px;
+    font-weight:500;
+}
+    
+.question {
+    background:#fff;
+    padding:20px;
+    margin:18px 0;
+    border-radius:10px;
+    border:1px solid #d9bfa5;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+    
+.question:hover {
+    transform:translateY(-2px);
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+    
+.question p {
+font-weight:600;
+color:#6d2323;
+margin-bottom:10px;
+}
+    
+label {
+    display:block;
+    background-color:#fffaf3;
+    border:1px solid #e1c7a1;
+    padding:8px 12px;
+    margin:6px 0;
+    border-radius:8px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+}
+    
+label:hover {
+    background-color:#f4e3d0;
+}
+
+input[type="radio"] {
+    accent-color:#a82828;
+    margin-right:8px;
+}
+    
+.button-container {
+    text-align:center;
+    margin-top:30px;
+}
+   
+button {
+    background-color:#a82828;
+    color:#fff;
+    border:none;
+    padding:12px 24px;
+    border-radius:10px;
+    font-weight:600;
+    cursor:pointer;
+    transition: 0.3s ease,
+}
+    
+button:hover {
+    background-color:#7c1f1f;
+    transform:translateY(-2px);
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Tes Minat Calon Guru Matematika</h2>
+    <p class="intro">Jawablah semua pertanyaan dengan jujur sesuai minat Anda!</p>
+    <form id="quizForm"></form>
+    <div class="button-container">
+      <button type="button" onclick="submitAnswers()">Lihat Hasil</button>
+      <button type="button" onclick="window.location.reload()">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {q:"Saya senang menjelaskan materi matematika secara langsung di kelas.", cat:"P"},
+      {q:"Saya berusaha membuat suasana belajar menyenangkan bagi siswa.", cat:"P"},
+      {q:"Saya termotivasi untuk membimbing siswa agar memahami materi matematika.", cat:"P"},
+      {q:"Saya suka menyesuaikan metode mengajar agar sesuai kebutuhan siswa.", cat:"P"},
+      {q:"Saya merasa puas ketika siswa berhasil memahami pelajaran karena bimbingan saya.", cat:"P"},
+      {q:"Saya senang memberikan dorongan dan motivasi belajar kepada siswa.", cat:"P"},
+    
+      {q:"Saya tertarik menganalisis data dan hasil belajar siswa.", cat:"R"},
+      {q:"Saya menikmati mencari metode baru berdasarkan penelitian pendidikan.", cat:"R"},
+      {q:"Saya senang mengembangkan teori atau model pembelajaran matematika.", cat:"R"},
+      {q:"Saya ingin melakukan penelitian untuk meningkatkan kualitas pembelajaran matematika.", cat:"R"},
+      {q:"Saya suka membuat eksperimen atau studi kasus di bidang pendidikan matematika.", cat:"R"},
+      {q:"Saya ingin menulis karya ilmiah atau artikel penelitian di pendidikan matematika.", cat:"R"},
+    
+      {q:"Saya senang membuat modul atau media pembelajaran matematika.", cat:"K"},
+      {q:"Saya menikmati membuat silabus atau rencana pembelajaran inovatif.", cat:"K"},
+      {q:"Saya suka mendesain materi ajar yang menarik dan interaktif.", cat:"K"},
+      {q:"Saya tertarik menciptakan alat bantu atau aplikasi untuk belajar matematika.", cat:"K"},
+      {q:"Saya ingin memperbaiki metode pembelajaran agar lebih efektif melalui materi ajar.", cat:"K"},
+      {q:"Saya senang mengembangkan konten pembelajaran untuk berbagai jenjang pendidikan.", cat:"K"},
+     
+      {q:"Saya tertarik memimpin tim guru atau kelompok pendidikan.", cat:"M"},
+      {q:"Saya ingin merencanakan program pembelajaran atau kegiatan sekolah.", cat:"M"},
+      {q:"Saya senang mengatur sumber daya untuk mendukung proses belajar mengajar.", cat:"M"},
+      {q:"Saya peduli terhadap kemajuan dan kinerja guru maupun siswa.", cat:"M"},
+      {q:"Saya ingin menjadi pengambil keputusan untuk peningkatan kualitas pendidikan.", cat:"M"},
+      {q:"Saya senang mengevaluasi dan memonitor program pendidikan.", cat:"M"},
+      {q:"Saya merasa puas jika berhasil mengelola kegiatan pendidikan secara efektif.", cat:"M"}
+    ];
+
+    function shuffle(arr){
+        for(let i=arr.length-1;i>0;i--){
+            const j=Math.floor(Math.random()*(i+1));
+            [arr[i],arr[j]]=[arr[j],arr[i]];
+        } 
+        return arr;
+    }
+    const quizForm = document.getElementById('quizForm');
+    shuffle(questions).forEach((item,i)=>{
+      let html = `<div class="question" id="q${i}"><p>${i+1}. ${item.q}</p>
+      <div class="likert-row">
+        ${[
+          {value:5, text:"Sangat Sesuai"},
+          {value:4, text:"Sesuai"},
+          {value:3, text:"Cukup Sesuai"},
+          {value:2, text:"Kurang Sesuai"},
+          {value:1, text:"Tidak Sesuai"}
+        ].map(opt => `
+          <label>
+            <input type="radio" class="likert-input" name="q${i}" value="${opt.value}" required>
+            <div class="likert-option">${opt.value} - ${opt.text}</div>
+          </label>
+        `).join('')}
+      </div>
+  </div>`;
+  quizForm.innerHTML += html;
+});
+
+    function submitAnswers(){
+      const answers = document.querySelectorAll('input[type="radio"]:checked');
+      if(answers.length < questions.length){
+        for(let i=0;i<questions.length;i++){
+          if(!document.querySelector(`input[name="q${i}"]:checked`)){
+            document.getElementById(`q${i}`).scrollIntoView({behavior:'smooth',block:'center'});
+            break;
+          }
+        }
+        alert("Harap jawab semua pertanyaan sebelum melihat hasil!");
+        return;
+      }
+      let scores = {P:0,R:0,K:0,M:0};
+      answers.forEach((ans,i)=>{scores[questions[i].cat] += parseInt(ans.value);});
+      localStorage.setItem('teacherInterestScores',JSON.stringify(scores));
+      window.location.href="result-teacher-interest.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hasil Tes Kecemasan Matematika</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b84d4d, #e3b57e);
+  margin: 0;
+  padding: 40px 0;
+}
+.container {
+  max-width: 850px;
+  margin: auto;
+  background: #fffaf3;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+h2 {
+  text-align: center;
+  color: #8c1f1f;
+  margin-bottom: 10px;
+}
+
+.section {
+  margin-top: 25px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e1c7a1;
+}
+.section h3 {
+  margin-top: 0;
+  color: #6d2323;
+}
+ul {
+  margin-top: 8px;
+  padding-left: 20px;
+}
+button {
+  background-color: #a82828;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: block;
+  margin: 30px auto 0;
+}
+button:hover {
+  background-color: #7c1f1f;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Hasil Tes Kecemasan Matematika</h2>
+
+<div id="summary" class="summary-box"></div>
+
+<canvas id="chart" style="margin-top:35px;"></canvas>
+
+<div id="interpretation"></div>
+
+<button onclick="window.location.href='math-anxiety.html'">Ulangi Tes</button>
+
+</div>
+
+<script>
+const data = JSON.parse(localStorage.getItem("mathAnxiety"));
+
+if (!data) {
+  document.getElementById("summary").innerHTML = "<p>Data tidak ditemukan.</p>";
+} else {
+
+  const total = data.K + data.A + data.F;
+
+  const mean = 75;
+  const sd = 7.05;
+
+  let kategori = "";
+  if (total < mean - sd) {
+    kategori = "Rendah";
+  } else if (total => mean + sd) {
+    kategori = "Tinggi";
+  } else {
+    kategori = "Sedang";
+  }
+
+  new Chart(document.getElementById("chart"), {
+    type: 'bar',
+    data: {
+      labels: ['Kognitif', 'Afektif', 'Fisiologis'],
+      datasets: [{
+        label: 'Skor Kecemasan',
+        data: [data.K, data.A, data.F],
+        backgroundColor: ['#e07b7b','#7be0a5','#7b9ee0']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  let narasi = "";
+  let tips = "";
+  let aspek = "";
+
+  const highestAspect = Object.entries(data).sort((a,b)=>b[1]-a[1])[0][0];
+  
+  const aspekNames = {
+    K: "Kognitif (pikiran dan keyakinan diri)",
+    A: "Afektif (emosi dan perasaan)",
+    F: "Fisiologis (reaksi tubuh)"
+  };
+
+  aspek = `
+    <div class="section">
+      <h3>Aspek yang Paling Dominan</h3>
+      <p><b>${aspekNames[highestAspect]}</b> merupakan aspek yang paling memengaruhi kecemasan matematika kamu.</p>
+    </div>
+  `;
+
+  if (kategori === "Rendah") {
+    narasi = `
+      <div class="section">
+        <h3>Ringkasan</h3>
+        <p>Tingat kecemasan matematika kamu tergolong <b>rendah</b>. Kamu cukup nyaman berhadapan dengan matematika dan mampu mengontrol emosi saat mengerjakan soal.</p>
+      </div>
+    `;
+    tips = `
+      <div class="section">
+        <h3>Saran</h3>
+        <ul>
+          <li>Pertahankan pola belajar yang teratur.</li>
+          <li>Terus bangun kepercayaan diri melalui latihan soal.</li>
+          <li>Gunakan matematika dalam kehidupan sehari-hari untuk menjaga kelancaran.</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  if (kategori === "Sedang") {
+    narasi = `
+      <div class="section">
+        <h3>Ringkasan</h3>
+        <p>Tingkat kecemasan matematika kamu berada pada kategori <b>sedang</b>. Kamu terkadang merasa tegang, tetapi masih dapat mengelola situasi dengan baik.</p>
+      </div>
+    `;
+    tips = `
+      <div class="section">
+        <h3>Saran</h3>
+        <ul>
+          <li>Gunakan teknik relaksasi ringan sebelum mengerjakan matematika.</li>
+          <li>Kerjakan latihan bertahap, mulai dari soal mudah.</li>
+          <li>Bangun rasa percaya diri dengan membuat catatan ringkas saat belajar.</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  if (kategori === "Tinggi") {
+    narasi = `
+      <div class="section">
+        <h3>Ringkasan</h3>
+        <p>Tingkat kecemasan matematika kamu tergolong <b>tinggi</b>. Kamu cenderung merasa takut, khawatir, atau mengalami respon tubuh yang mengganggu ketika berhadapan dengan matematika.</p>
+      </div>
+    `;
+    tips = `
+      <div class="section">
+        <h3>Saran</h3>
+        <ul>
+          <li>Coba latihan pernapasan atau relaksasi sebelum belajar.</li>
+          <li>Bagi materi matematika menjadi bagian-bagian kecil agar lebih mudah dipahami.</li>
+          <li>Belajar bersama teman atau guru yang suportif dapat membantu mengurangi tekanan.</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  document.getElementById("interpretation").innerHTML = narasi + aspek + tips;
+}
+</script>
+
+</body>
+</html>

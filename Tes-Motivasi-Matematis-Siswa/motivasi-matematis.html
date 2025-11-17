@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes Motivasi Matematis</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+.likert-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.likert-option {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px 12px;
+  border-radius: 30px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.25s ease;
+  font-weight: 500;
+  color: #6d2323;
+}
+
+.likert-option:hover {
+  background: #f3d9be;
+  transform: translateY(-2px);
+}
+
+.likert-input {
+  display: none;
+}
+
+.likert-input:checked + .likert-option {
+  background: #a82828;
+  color: #fff;
+  border-color: #7c1f1f;
+  transform: translateY(-2px);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b84d4d, #e3b57e);
+  margin: 0;
+  padding: 40px 0;
+  color: #333;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fffaf3;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+h2 {
+  text-align: center;
+  color: #8c1f1f;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.intro {
+  text-align: center;
+  color: #fff;
+  background-color: #8c1f1f;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  font-weight: 500;
+}
+.question {
+  background: #fff;
+  padding: 20px;
+  margin: 18px 0;
+  border-radius: 10px;
+  border: 1px solid #d9bfa5;
+  transition: 0.2s ease;
+}
+.question:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.question p {
+  font-weight: 600;
+  color: #6d2323;
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  background-color: #fffaf3;
+  border: 1px solid #e1c7a1;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+label:hover {
+  background-color: #f4e3d0;
+}
+input[type="radio"] {
+  accent-color: #a82828;
+  margin-right: 8px;
+}
+
+.button-container {
+  text-align: center;
+  margin-top: 30px;
+}
+button {
+  background-color: #a82828;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+button:hover {
+  background-color: #7c1f1f;
+  transform: translateY(-2px);
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>Tes Motivasi Matematis</h2>
+<p class="intro">Pilih jawaban yang paling menggambarkan dirimu!</p>
+
+<form id="quizForm"></form>
+
+<div class="button-container">
+<button onclick="submitQuiz()">Lihat Hasil</button>
+<button type="button" onclick="window.location.reload()">Reset</button>
+</div>
+</div>
+
+<script>
+let questions = [
+  "Saya belajar matematika atas keinginan sendiri.",
+  "Saya mempelajari materi matematika sebelum diberikan guru di sekolah.",
+  "Dalam mempersiapkan diri untuk ulangan matematika saya menyusun bahan-bahan secara sistematis.",
+  "Saya yakin dapat menguasai pelajaran matematika meskipun sulit.",
+  "Saya berinisiatif mengerjakan latihan tanpa disuruh guru.",
+  "Saya mencatat semua contoh penyelesaian soal, bagan, gambar, tabel, ilustrasi guru.",
+  "Saya rajin belajar karena ingin mendapatkan hasil belajar yang memuaskan.",
+  "Saya cemas hasil belajar matematika saya jelek.",
+  "Apabila ragu-ragu, saya mencari contoh yang benar sebagai pola.",
+  "Saya mengerjakan tugas matematika dengan mencontek pekerjaan teman.",
+  "Saya mempelajari matematika tanpa target apapun.",
+  "Saya yakin matematika sangat bermanfaat untuk masa depan saya.",
+  "Saya mempelajari lagi materi yang telah dijelaskan guru di sekolah.",
+  "Saya yakin bisa mendapat nilai tinggi jika rajin belajar.",
+  "Saya tidak semangat belajar matematika karena tidak ada hubungannya dengan cita-cita.",
+  "Saya menjadi lebih bersemangat saat guru memberikan pujian.",
+  "Saya senang menjelaskan materi yang dipahami kepada teman di depan kelas.",
+  "Saya senang jika guru mengumumkan siswa yang mendapat nilai tertinggi.",
+  "Saya senang jika guru menilai hasil pekerjaan rumah.",
+  "Saya senang jika guru mengumumkan kelompok terbaik dalam pembelajaran.",
+  "Saya merasa tertantang untuk mengerjakan soal matematika yang sulit.",
+  "Materi matematika yang dijelaskan guru membosankan sehingga saya lebih senang menggambar atau melamun.",
+  "Saya lebih memahami materi saat guru memberi contoh nyata.",
+  "Saya lebih mudah memahami materi saat guru menjelaskan dengan slide presentasi.",
+  "Saya merasa bosan jika guru memberikan latihan soal yang banyak."
+];
+
+questions.sort(() => Math.random() - 0.5);
+
+let html = "";
+questions.forEach((q,i) => {
+  html += `
+  <div class="question">
+    <p>${i+1}. ${q}</p>
+    <div class="likert-row">
+      ${[
+        {value:5,text:"Selalu"},
+        {value:4,text:"Sering"},
+        {value:3,text:"Terkadang"},
+        {value:2,text:"Jarang"},
+        {value:1,text:"Tidak Pernah"}
+      ].map(opt => `
+        <label style="flex:1;">
+          <input class="likert-input" type="radio" name="q${i}" value="${opt.value}" required>
+          <div class="likert-option">${opt.value} – ${opt.text}</div>
+        </label>`).join("")}
+    </div>
+  </div>`;
+});
+document.getElementById("quizForm").innerHTML = html;
+
+function submitQuiz() {
+  let totalScore=0;
+  let perQuestion = [];
+  const N = questions.length;
+
+  for(let i=0;i<N;i++){
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    if(!selected){
+      const target = document.querySelectorAll('.question')[i];
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      target.style.border = "2px solid #d9534f";
+      setTimeout(() => { target.style.border = "1px solid #d9bfa5"; }, 1500);
+      alert(`Masih ada soal yang belum dijawab (Soal nomor ${i+1})`);
+      return;
+    }
+    const score = Number(selected.value);
+    totalScore += score;
+    perQuestion.push(score);
+  }
+
+  const P = (totalScore / (N*5)) * 100;
+  let category="";
+  if(P>=81) category="Sangat Tinggi";
+  else if(P>=61) category="Tinggi";
+  else if(P>=41) category="Sedang";
+  else if(P>=21) category="Rendah";
+  else category="Sangat Rendah";
+
+  localStorage.setItem("mathMotivation", JSON.stringify({
+    percentage: P.toFixed(2),
+    category: category,
+    perQuestion: perQuestion
+  }));
+
+  window.location.href = "result-motivasi-matematis.html";
+}
+</script>
+</body>
+</html>

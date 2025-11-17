@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Pengguna</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<script src="firebase.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b84d4d, #e3b57e);
+  margin: 0;
+  padding: 40px 0;
+}
+
+.container {
+  max-width: 750px;
+  background: #fffaf3;
+  padding: 35px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  margin: auto;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.profile-photo {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: #8c1f1f;
+  margin: auto;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 42px;
+  font-weight: bold;
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+h2 {
+  margin-top: 10px;
+  color: #6d2323;
+}
+
+.email {
+  color: #7c4a4a;
+  margin-top: -5px;
+}
+
+.edit-btn {
+  margin-top: 15px;
+  background: #a82828;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: 0.25s;
+}
+
+.edit-btn:hover {
+  background: #7c1f1f;
+}
+
+.logout-btn {
+  margin-top: 15px;
+  background: #6d2323;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: 0.25s;
+}
+
+.logout-btn:hover {
+  background: #4a1818;
+}
+
+.section {
+  margin-top: 25px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e1c7a1;
+}
+
+.section h3 {
+  margin-top: 0;
+  color: #6d2323;
+}
+
+.history-card {
+  background: #fffaf3;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #e1c7a1;
+  margin-top: 12px;
+}
+
+.history-card p {
+  margin: 5px 0;
+  color: #4a3a3a;
+}
+
+#fileInput { display: none; }
+
+.crop-area {
+  display: none;
+  margin-top: 20px;
+}
+
+#cropper-img {
+  width: 100%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header-section">
+    <div class="profile-photo" id="profilePhoto"></div>
+    <h2 id="userName">Memuat...</h2>
+    <div class="email" id="userEmail">-</div>
+
+    <button class="edit-btn" onclick="document.getElementById('fileInput').click();">
+      Ganti Foto Profil
+    </button>
+
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+
+    <input type="file" accept="image/*" id="fileInput">
+  </div>
+
+  <div class="crop-area" id="cropArea">
+    <img id="cropper-img">
+    <button class="edit-btn" id="saveCrop" style="margin-top:15px;">Simpan Foto</button>
+  </div>
+
+  <div class="section">
+    <h3>Riwayat Tes</h3>
+    <div id="historyList"></div>
+  </div>
+
+</div>
+
+<script>
+let currentUser;
+let cropper;
+
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+  currentUser = user;
+
+  const doc = await getUserProfile(user.uid);
+  const data = doc.data();
+
+  document.getElementById("userName").innerText = data.name;
+  document.getElementById("userEmail").innerText = data.email;
+
+  const photoDiv = document.getElementById("profilePhoto");
+
+  if (data.photoURL) {
+    photoDiv.innerHTML = `<img src="${data.photoURL}">`;
+  } else {
+    const initial = data.name.charAt(0).toUpperCase();
+    photoDiv.innerHTML = initial;
+  }
+
+  loadHistory();
+});
+
+async function loadHistory() {
+  const list = document.getElementById("historyList");
+  list.innerHTML = "<p>Memuat...</p>";
+
+  const snap = await getUserTestHistory(currentUser.uid);
+
+  if (snap.empty) {
+    list.innerHTML = "<p>Belum ada riwayat tes.</p>";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  snap.forEach(doc => {
+    const d = doc.data();
+
+    const date = d.date ? d.date.toDate().toLocaleString("id-ID") : "-";
+
+    let tip = "";
+    if (d.summary === "Tinggi") tip = "Disarankan latihan relaksasi & belajar bertahap.";
+    if (d.summary === "Sedang") tip = "Latihan konsisten akan membantu.";
+    if (d.summary === "Rendah") tip = "Pertahankan kepercayaan diri Anda!";
+    if (d.summary === "Visual") tip = "Gunakan diagram & warna.";
+    if (d.summary === "Auditori") tip = "Belajar via diskusi atau rekaman.";
+    if (d.summary === "Kinestetik") tip = "Gunakan aktivitas fisik & manipulatif.";
+    if (d.summary === "Read/Write") tip = "Gunakan catatan & ringkasan.";
+
+    list.innerHTML += `
+      <div class="history-card">
+        <p><b>Jenis Tes:</b> ${d.type}</p>
+        <p><b>Hasil:</b> ${d.summary}</p>
+        <p><b>Tanggal:</b> ${date}</p>
+        <p><b>Tips:</b> ${tip}</p>
+      </div>
+    `;
+  });
+}
+
+document.getElementById("logoutBtn").onclick = () => {
+  auth.signOut();
+};
+
+document.getElementById("fileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const img = document.getElementById("cropper-img");
+  img.src = URL.createObjectURL(file);
+
+  document.getElementById("cropArea").style.display = "block";
+
+  if (cropper) cropper.destroy();
+
+  cropper = new Cropper(img, {
+    aspectRatio: 1,
+    viewMode: 1,
+    background: false,
+  });
+});
+
+document.getElementById("saveCrop").addEventListener("click", () => {
+  cropper.getCroppedCanvas({
+    width: 400,
+    height: 400
+  }).toBlob(async (blob) => {
+
+    const url = await uploadCroppedPhoto(currentUser.uid, blob);
+    await updatePhotoURL(currentUser.uid, url);
+
+    document.getElementById("profilePhoto").innerHTML = `<img src="${url}">`;
+
+    document.getElementById("cropArea").style.display = "none";
+  });
+});
+
+</script>
+
+</body>
+</html>

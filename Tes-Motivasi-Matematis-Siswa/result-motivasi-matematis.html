@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hasil Tes Motivasi Matematis</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b84d4d, #e3b57e);
+  margin: 0;
+  padding: 50px 0;
+  color: #333;
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fffaf3;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+h2 {
+  text-align: center;
+  color: #8c1f1f;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+#resultText {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 20px 0;
+  text-align: center;
+  color: #6d2323;
+}
+.tips {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f4e3d0;
+  border-radius: 12px;
+  font-size: 15px;
+  text-align: center;
+}
+
+canvas {
+  margin: 25px auto;
+  display: block;       
+  max-width: 300px;     
+  max-height: 300px;    
+}
+button {
+  background-color: #a82828;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 20px;
+}
+button:hover {
+  background-color: #7c1f1f;
+  transform: translateY(-2px);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Hasil Tes Motivasi Matematis</h2>
+
+<p id="resultText"></p>
+<div class="tips" id="tipsText"></div>
+
+<canvas id="motivationPie" width="400" height="400"></canvas>
+
+<div style="text-align:center;">
+<button onclick="window.location.href='motivasi-matematis.html'">Ulangi Tes</button>
+</div>
+</div>
+
+<script>
+const data = JSON.parse(localStorage.getItem("mathMotivation"));
+
+if(!data){
+  document.getElementById("resultText").textContent = "Tidak ada data tes. Silakan lakukan tes terlebih dahulu.";
+} else {
+  const {percentage, category} = data;
+  document.getElementById("resultText").textContent = `Persentase motivasi matematis: ${percentage}% (${category})`;
+
+  let tips = "";
+  switch(category){
+    case "Sangat Tinggi":
+      tips = "Motivasi matematis kamu sangat tinggi. Pertahankan kebiasaan belajar mandiri dan tantang diri dengan soal lebih kompleks.";
+      break;
+    case "Tinggi":
+      tips = "Motivasi matematis kamu tinggi. Terus tingkatkan dengan belajar rutin dan berpartisipasi aktif di kelas.";
+      break;
+    case "Sedang":
+      tips = "Motivasi matematis kamu sedang. Buat jadwal belajar, beri target kecil setiap hari, dan diskusi dengan teman atau guru.";
+      break;
+    case "Rendah":
+      tips = "Motivasi matematis kamu rendah. Cobalah mempelajari matematika dengan cara yang menyenangkan, gunakan contoh nyata, dan minta bimbingan guru.";
+      break;
+    case "Sangat Rendah":
+      tips = "Motivasi matematis sangat rendah. Fokus pada tujuan jangka panjang, buat rutinitas belajar sederhana, dan jangan ragu minta bantuan.";
+      break;
+  }
+  document.getElementById("tipsText").textContent = tips;
+
+  const ctx = document.getElementById('motivationPie').getContext('2d');
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Motivasi', 'Sisa'],
+      datasets: [{
+        data: [percentage, 100 - percentage],
+        backgroundColor: ['#7be0a5','#7b9ee0'],
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.label + ': ' + context.parsed + '%';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+</script>
+
+</body>
+</html>

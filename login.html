@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="firebase.js"></script>
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b84d4d, #e3b57e);
+  margin: 0;
+  padding: 200px 0;
+}
+
+.container {
+  max-width: 420px;
+  background: #fffaf3;
+  padding: 30px;
+  margin: auto;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+h2 {
+  text-align: center;
+  color: #8c1f1f;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 600;
+  color: #6d2323;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e1c7a1;
+  border-radius: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #a82828;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+button:hover {
+  background: #7c1f1f;
+}
+
+.note {
+  text-align: center;
+  color: #6d2323;
+  margin-top: 15px;
+  font-size: 14px;
+}
+.note a {
+  color: #a82828;
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Login Akun</h2>
+
+  <label>Email</label>
+  <input type="email" id="email">
+
+  <label>Password</label>
+  <input type="password" id="password">
+
+  <button id="loginBtn">Login</button>
+
+  <p class="note">
+    Belum punya akun?
+    <a href="register.html">Daftar</a>
+  </p>
+</div>
+
+<script>
+document.getElementById("loginBtn").addEventListener("click", async function() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("Mohon isi email dan password.");
+    return;
+  }
+
+  this.disabled = true;
+  this.innerText = "Memproses...";
+
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    window.location.href = "profile.html";
+
+  } catch (err) {
+    alert("Gagal login: " + err.message);
+  }
+
+  this.disabled = false;
+  this.innerText = "Login";
+});
+</script>
+
+</body>
+</html>

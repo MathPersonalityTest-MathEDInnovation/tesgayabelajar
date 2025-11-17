@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tes Gaya Belajar (VARK)</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #b84d4d, #e3b57e);
+      margin: 0;
+      padding: 40px 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fffaf3;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #8c1f1f;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .intro {
+      text-align: center;
+      color: #fff;
+      background-color: #8c1f1f;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .question {
+      background: #fff;
+      padding: 20px;
+      margin: 18px 0;
+      border-radius: 10px;
+      border: 1px solid #d9bfa5;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .question:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .question p {
+      font-weight: 600;
+      color: #6d2323;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      background-color: #fffaf3;
+      border: 1px solid #e1c7a1;
+      padding: 8px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    label:hover {
+      background-color: #f4e3d0;
+    }
+
+    input[type="radio"] {
+      accent-color: #a82828;
+      margin-right: 8px;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    button {
+      background-color: #a82828;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 5px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #7c1f1f;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Tes Gaya Belajar (VARK)</h2>
+    <p class="intro">Pilih satu jawaban yang paling menggambarkan dirimu!</p>
+
+    <form id="quizForm"></form>
+
+    <div class="button-container">
+      <button type="button" onclick="submitAnswers()">Lihat Hasil</button>
+      <button type="button" onclick="window.location.reload()">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {q:"Ketika berbicara, kecenderungan gaya bicara saya...", A:"Cepat", B:"Berirama", C:"Lambat", D:"Terstruktur"},
+      {q:"Saya...", A:"Mampu merencanakan dan mengatur kegiatan jangka panjang dengan baik", B:"Mampu menirukan nada dan intonasi suara dengan tepat", C:"Mahir dalam menyusun potongan gambar atau benda", D:"Senang menulis ringkasan atau daftar rencana kegiatan saya"},
+      {q:"Saya dapat mengingat dengan baik informasi yang...", A:"Disertai gambar atau grafik", B:"Dijelaskan secara lisan oleh guru", C:"Disertai praktik langsung", D:"Tersedia dalam bentuk teks atau catatan tertulis"},
+      {q:"Saya menghafal sesuatu...", A:"Dengan membayangkannya dalam bentuk gambar", B:"Dengan mengucapkannya keras-keras", C:"Dengan melakukan gerakan sambil menghafal", D:"Dengan menulis ulang atau membuat rangkuman"},
+      {q:"Saya merasa sulit...", A:"Mengingat perintah lisan tanpa melihat tulisan", B:"Duduk tenang tanpa berbicara", C:"Fokus tanpa bergerak", D:"Mengingat hal yang tidak saya catat atau tulis"},
+      {q:"Saya lebih suka...", A:"Membaca daripada mendengar penjelasan", B:"Mendengar daripada membaca", C:"Menggunakan model atau praktik langsung", D:"Membuat catatan atau rangkuman sendiri"},
+      {q:"Saya suka...", A:"Mencoret-coret saat mendengarkan", B:"Membaca keras-keras", C:"Menggerakkan tangan atau berjalan saat berpikir", D:"Membuat daftar poin penting dari yang saya dengar"},
+      {q:"Saya lebih suka melakukan...", A:"Demonstrasi atau presentasi visual", B:"Diskusi panjang lebar", C:"Aktivitas fisik atau eksperimen", D:"Membuat laporan atau menulis refleksi kegiatan"},
+      {q:"Saya lebih menyukai...", A:"Seni rupa", B:"Musik", C:"Olahraga atau kegiatan fisik", D:"Menulis puisi, cerita, atau catatan pribadi"},
+      {q:"Ketika mengerjakan sesuatu, saya selalu...", A:"Mengikuti petunjuk visual atau diagram", B:"Membicarakannya dengan orang lain", C:"Mencoba langsung untuk mengetahui caranya", D:"Membaca instruksi dan mencatat langkah-langkahnya"},
+      {q:"Konsentrasi saya terganggu oleh...", A:"Gerakan atau ketidakteraturan", B:"Suara keras atau kebisingan", C:"Ketidaknyamanan fisik", D:"Banyaknya teks yang tidak teratur atau tulisan yang tidak rapi"},
+      {q:"Saya lebih mudah belajar melalui kegiatan...", A:"Melihat gambar atau tayangan", B:"Mendengarkan ceramah", C:"Melakukan eksperimen", D:"Membaca buku dan menulis catatan"},
+      {q:"Saya berbicara dengan...", A:"Singkat dan fokus pada poin-poin penting", B:"Intonasi dan ekspresi suara yang hidup", C:"Disertai banyak gerakan tubuh", D:"Mengutip atau menyebutkan kata-kata tertulis yang saya baca"},
+      {q:"Untuk mengetahui suasana hati seseorang, saya...", A:"Melihat ekspresi wajahnya", B:"Mendengarkan nada suaranya", C:"Memperhatikan gerak tubuhnya", D:"Membaca pesan tertulis atau kata-kata yang digunakannya"},
+      {q:"Untuk mengisi waktu luang, saya lebih suka...", A:"Menonton pertunjukan visual", B:"Mendengarkan musik", C:"Melakukan permainan aktif", D:"Membaca atau menulis jurnal pribadi"},
+      {q:"Ketika mengajarkan sesuatu, saya lebih suka...", A:"Menunjukkannya dengan gambar", B:"Menjelaskan secara lisan", C:"Mempraktikkannya langsung", D:"Menuliskannya dan membagikan catatan"},
+      {q:"Dalam mencatat pelajaran, saya biasanya...", A:"Menggambar diagram atau peta konsep", B:"Merekam suara penjelasan guru", C:"Menulis sambil berjalan atau berdiri", D:"Membuat rangkuman dengan kata-kata saya sendiri"},
+      {q:"Saya merasa paling nyaman belajar di tempat...", A:"Dengan papan tulis atau media visual jelas", B:"Dengan penjelasan verbal dan diskusi", C:"Dengan ruang gerak yang luas", D:"Dengan suasana tenang dan meja untuk menulis"},
+      {q:"Dalam ujian, saya lebih percaya diri jika...", A:"Ada soal berbentuk gambar atau grafik", B:"Soalnya dibacakan atau dijelaskan", C:"Ada bagian praktik atau demonstrasi", D:"Soalnya berbentuk esai atau uraian tertulis"},
+      {q:"Ketika membaca buku, saya...", A:"Membayangkan isi teks seperti film", B:"Membaca dengan suara pelan", C:"Sulit duduk lama tanpa bergerak", D:"Menandai, memberi garis bawah, dan membuat catatan pinggir"},
+      {q:"Saya lebih mudah memahami informasi...", A:"Dalam bentuk grafik atau tabel", B:"Jika dijelaskan dengan suara dan nada", C:"Jika saya bisa mencoba langsung", D:"Jika saya menulis ulang atau merangkumnya"},
+      {q:"Saya lebih tertarik pada...", A:"Infografik dan desain visual", B:"Podcast atau ceramah audio", C:"Aktivitas luar ruangan", D:"Buku, artikel, atau tulisan ilmiah"},
+      {q:"Dalam diskusi kelompok, saya sering...", A:"Menggambar ide di papan", B:"Menyampaikan pendapat dengan antusias", C:"Bergerak aktif dan memimpin kegiatan", D:"Menulis poin penting hasil diskusi"},
+      {q:"Saya memahami pelajaran matematika lebih mudah jika...", A:"Disertai diagram atau grafik", B:"Dijelaskan dengan lisan", C:"Menggunakan benda konkret", D:"Dijabarkan langkah demi langkah secara tertulis"},
+      {q:"Ketika belajar sendiri, saya...", A:"Menggunakan warna dan gambar untuk mengingat", B:"Membaca materi keras-keras", C:"Belajar sambil berjalan atau bergerak", D:"Membuat catatan ringkas dan meringkas dari berbagai sumber"}
+    ];
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    const quizForm = document.getElementById('quizForm');
+    shuffle(questions).forEach((item, i) => {
+      let opts = [
+        {text: item.A, value: "V"},
+        {text: item.B, value: "A"},
+        {text: item.C, value: "K"},
+        {text: item.D, value: "R"}
+      ];
+      shuffle(opts);
+      let html = `<div class="question"><p>${i + 1}. ${item.q}</p>`;
+      opts.forEach(opt => {
+        html += `<label><input type="radio" name="q${i}" value="${opt.value}"> ${opt.text}</label>`;
+      });
+      html += `</div>`;
+      quizForm.innerHTML += html;
+    });
+    
+    function submitAnswers() {
+  const answers = document.querySelectorAll('input[type="radio"]:checked');
+  
+  for (let i = 0; i < questions.length; i++) {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    if (!selected) {
+      const target = document.querySelector(`.question:nth-child(${i + 1})`);
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+
+      target.style.border = "2px solid #d9534f"; 
+      setTimeout(() => { target.style.border = "1px solid #d9bfa5"; }, 1500);
+
+      alert(`Masih ada soal yang belum dijawab (Soal nomor ${i + 1}).`);
+      return;
+    }
+  }
+
+  let scores = {V:0, A:0, K:0, R:0};
+  answers.forEach(ans => { scores[ans.value]++; });
+  localStorage.setItem('varkScores', JSON.stringify(scores));
+  window.location.href = "result-learning-style-(shuffle).html";
+}
+
+  </script>
+</body>
+</html>

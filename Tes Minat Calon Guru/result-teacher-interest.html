@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hasil Tes Minat Guru</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+        font-family: 'Poppins', sans-serif; background: linear-gradient(135deg,#b84d4d,#e3b57e); margin:0; padding:40px 0; color:#333;}
+    .container {max-width:800px;margin:0 auto;background:#fffaf3;padding:30px 40px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,0.15);}
+    h2 {text-align:center;color:#8c1f1f;margin-bottom:10px;font-weight:600;}
+    #chartContainer {width:100%;max-width:700px;margin:30px auto;}
+    .summary {text-align:center;margin-top:20px;font-size:16px;line-height:1.6;color:#6d2323;}
+    button {display:block;margin:20px auto;background-color:#a82828;color:#fff;border:none;padding:12px 24px;border-radius:10px;font-weight:600;cursor:pointer;}
+    button:hover{background-color:#7c1f1f;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Hasil Tes Minat Calon Guru Matematika</h2>
+    <div id="chartContainer">
+      <canvas id="resultChart"></canvas>
+    </div>
+    <div class="summary" id="summary"></div>
+    <button onclick="window.location.href='teacher-interest.html'">Ulangi Tes</button>
+  </div>
+
+  <script>
+    const scores = JSON.parse(localStorage.getItem('teacherInterestScores'));
+    if(!scores){alert("Data hasil tidak ditemukan."); window.location.href='tes.html';}
+
+    const maxScores = {P:30,R:30,K:30,M:35};
+    const percentages = {};
+    for(let cat in scores){percentages[cat] = (scores[cat]/maxScores[cat]*100).toFixed(1);}
+
+    const ctx = document.getElementById('resultChart').getContext('2d');
+    new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:['Pendidik/Praktisi Kelas','Peneliti Pendidikan','Pengembang Kurikulum','Kepemimpinan & Manajerial'],
+        datasets:[{
+          label:'Persentase Minat (%)',
+          data:[percentages.P,percentages.R,percentages.K,percentages.M],
+          backgroundColor:['#e07b7b','#e0a57b','#7be0a5','#7b9ee0']
+        }]
+      },
+      options:{
+        responsive:true,
+        scales:{
+            x: {
+            beginAtZero: true,
+            max: 100,
+            title: { display: true, text: 'Persentase (%)' },
+            ticks: {
+                align: 'center'
+            },
+            grid: {
+                offset: true 
+            },
+            barPercentage: 0.5, 
+            categoryPercentage: 0.8 
+        },
+            y:{beginAtZero:true,max:100,title:{display:true,text:'Persentase (%)'}}}
+      }
+    });
+
+    
+    const maxCat = Object.keys(percentages).reduce((a,b)=>percentages[a]>percentages[b]?a:b);
+    const tips = {
+      P:"Fokus pada pengembangan kemampuan mengajar, kreativitas metode pembelajaran, dan bimbingan siswa.",
+      R:"Fokus melakukan penelitian pendidikan matematika, analisis data, dan publikasi ilmiah.",
+      K:"Fokus mengembangkan materi ajar, kurikulum, dan media pembelajaran inovatif.",
+      M:"Fokus pada kepemimpinan pendidikan, manajemen program, dan pengambilan keputusan."
+    };
+    const summaryDiv = document.getElementById('summary');
+    summaryDiv.innerHTML = `<p>Minat dominan Anda: <strong>${maxCat=='P'?'Pendidik/Praktisi Kelas':maxCat=='R'?'Peneliti Pendidikan':maxCat=='K'?'Pengembang Kurikulum':'Kepemimpinan & Manajerial'}</strong></p>
+                            <p>Tips singkat: ${tips[maxCat]}</p>`;
+  </script>
+</body>
+</html>

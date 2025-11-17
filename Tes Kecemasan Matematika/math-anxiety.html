@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes Kecemasan Matematika</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+.likert-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.likert-option {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px 12px;
+  border-radius: 30px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.25s ease;
+  font-weight: 500;
+  color: #6d2323;
+}
+
+.likert-option:hover {
+  background: #f3d9be;
+  transform: translateY(-2px);
+}
+
+.likert-input {
+  display: none;
+}
+
+.likert-input:checked + .likert-option {
+  background: #a82828;
+  color: #fff;
+  border-color: #7c1f1f;
+  transform: translateY(-2px);
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b84d4d, #e3b57e);
+  margin: 0;
+  padding: 40px 0;
+  color: #333;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fffaf3;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+h2 {
+  text-align: center;
+  color: #8c1f1f;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.intro {
+  text-align: center;
+  color: #fff;
+  background-color: #8c1f1f;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  font-weight: 500;
+}
+.question {
+  background: #fff;
+  padding: 20px;
+  margin: 18px 0;
+  border-radius: 10px;
+  border: 1px solid #d9bfa5;
+  transition: 0.2s ease;
+}
+.question:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.question p {
+  font-weight: 600;
+  color: #6d2323;
+  margin-bottom: 10px;
+}
+label {
+  display: block;
+  background-color: #fffaf3;
+  border: 1px solid #e1c7a1;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+label:hover {
+  background-color: #f4e3d0;
+}
+input[type="radio"] {
+  accent-color: #a82828;
+  margin-right: 8px;
+}
+.button-container {
+  text-align: center;
+  margin-top: 30px;
+}
+button {
+  background-color: #a82828;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+button:hover {
+  background-color: #7c1f1f;
+  transform: translateY(-2px);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Tes Kecemasan Matematika</h2>
+<p class="intro">Pilih jawaban yang paling sesuai dengan kondisimu saat berhadapan dengan matematika!</p>
+
+<form id="quizForm"></form>
+
+<div class="button-container">
+<button onclick="submitQuiz()">Lihat Hasil</button>
+<button type="button" onclick="window.location.reload()">Reset</button>
+</div>
+</div>
+
+<script>
+const questions = [
+  {q:"Saya yakin dengan kemampuan diri saya untuk menyelesaikan soal matematika.", type:"K", reverse:true},
+  {q:"Mengerjakan soal matematika terasa mudah bagi saya.", type:"K", reverse:true},
+  {q:"Matematika adalah pelajaran yang sulit bagi saya.", type:"K", reverse:false},
+  {q:"Saya yakin bisa mendapatkan nilai matematika yang baik.", type:"K", reverse:true},
+  {q:"Saya tidak yakin bisa menyelesaikan soal matematika ketika berada di depan kelas.", type:"K", reverse:false},
+  {q:"Saya mampu berkonsentrasi saat mengerjakan soal matematika.", type:"K", reverse:true},
+  {q:"Saya sering kehilangan fokus ketika mengerjakan soal matematika.", type:"K", reverse:false},
+  {q:"Saya siap ketika guru meminta saya mengerjakan soal matematika di papan tulis.", type:"K", reverse:true},
+  {q:"Saya sangat takut melakukan kesalahan ketika mengerjakan soal matematika.", type:"K", reverse:false},
+  
+  {q:"Saya tidak gugup ketika guru bertanya tentang matematika.", type:"A", reverse:true},
+  {q:"Saya merasa takut atau bingung ketika guru menanyakan pemahaman saya tentang matematika.", type:"A", reverse:false},
+  {q:"Saya menikmati belajar matematika.", type:"A", reverse:true},
+  {q:"Saya suka belajar matematika karena membantu cara pikir saya menjadi lebih baik.", type:"A", reverse:true},
+  {q:"Saya kurang senang mengikuti pelajaran matematika.", type:"A", reverse:false},
+  {q:"Menurut saya, pelajaran matematika itu membosankan.", type:"A", reverse:false},
+  {q:"Saya merasa tenang setelah menyelesaikan tugas matematika.", type:"A", reverse:true},
+  {q:"Saya sulit tidur ketika besok ada pelajaran matematika.", type:"A", reverse:false},
+
+  {q:"Perut saya tidak mulas ketika mengerjakan soal matematika.", type:"F", reverse:true},
+  {q:"Saya merasa mual saat menghadapi ujian matematika.", type:"F", reverse:false},
+  {q:"Saya tidak berkeringat dingin ketika diminta mengerjakan soal matematika di papan tulis.", type:"F", reverse:true},
+  {q:"Saya berkeringat dingin ketika melihat soal matematika yang sulit.", type:"F", reverse:false},
+  {q:"Saya berkeringat dingin ketika tidak bisa menjawab pertanyaan guru matematika.", type:"F", reverse:false},
+  {q:"Saya tetap tenang ketika guru memeriksa jawaban matematika saya.", type:"F", reverse:true},
+  {q:"Jantung saya berdebar setiap akan memasuki pelajaran matematika.", type:"F", reverse:false},
+  {q:"Saya merasa pusing ketika mengerjakan soal matematika yang sulit.", type:"F", reverse:false}
+];
+
+questions.sort(() => Math.random() - 0.5);
+
+let html = "";
+questions.forEach((item, i) => {
+  html += `
+  <div class="question">
+    <p>${i+1}. ${item.q}</p>
+
+    <div class="likert-row">
+      ${[
+        {value:5, text:"Sangat Setuju"},
+        {value:4, text:"Setuju"},
+        {value:3, text:"Netral"},
+        {value:2, text:"Tidak Setuju"},
+        {value:1, text:"Sangat Tidak Setuju"}
+      ].map(opt => `
+        <label style="flex:1;">
+          <input class="likert-input" type="radio" name="q${i}" value="${opt.value}" required>
+          <div class="likert-option">${opt.value} – ${opt.text}</div>
+        </label>
+      `).join("")}
+    </div>
+
+  </div>
+`;
+});
+document.getElementById("quizForm").innerHTML = html;
+
+function submitQuiz() {
+  let K=0, A=0, F=0;
+
+  for (let i=0; i<questions.length; i++) {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+
+    if (!selected) {
+
+      const target = document.querySelector(`.question:nth-child(${i+1})`);
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      target.style.border = "2px solid #d9534f";
+      setTimeout(() => {
+        target.style.border = "1px solid #d9bfa5";
+      }, 1500);
+
+      alert(`Masih ada soal yang belum dijawab (Soal nomor ${i+1}).`);
+      return;
+    }
+
+    let score = Number(selected.value);
+    if (questions[i].reverse) score = 6 - score;
+
+    if (questions[i].type === "K") K += score;
+    if (questions[i].type === "A") A += score;
+    if (questions[i].type === "F") F += score;
+  }
+
+  localStorage.setItem("mathAnxiety", JSON.stringify({K,A,F}));
+  window.location.href = "result-math-anxiety.html";
+}
+
+</script>
+
+</body>
+</html>
